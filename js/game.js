@@ -3,56 +3,69 @@ const game = {
   ctx: undefined,
   frames: 0,
   highscore: 0,
-  init: function () {
-    this.ctx = this.canvas.getContext("2d")
+  init: function() {
+    this.ctx = this.canvas.getContext("2d");
     // call updateGame() every 20 milliseconds
-    // 
+    //
   },
   // drawBackground: function () {
   //   document.body.style.backgroundImage = "url(img/sky.png)";
   // },
-  start: function () {
+  start: function() {
     this.reset();
     this.interval = setInterval(this.updateGame.bind(this), 2000 / 60);
   },
-  reset: function () {
+  reset: function() {
     spaceship.x = game.canvas.width / 2;
     spaceship.y = game.canvas.height / 2;
-    this.background = new Background(this.canvas.width, this.canvas.height, this.ctx);
+    this.background = new Background(
+      this.canvas.width,
+      this.canvas.height,
+      this.ctx
+    );
     this.framesCounter = 0;
     this.asteroidField = [];
     this.score = 0;
     this.generateAsteroid();
     // this.renewAsteroid();
   },
-  updateGame: function () {
-    game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
-    spaceship.move(); // meter dentro de moveAll
-    // this.moveAll();
-
-    this.drawAll();
-    this.asteroidField.forEach(function (asteroid) {
-      asteroid.move();
-    });
-    // game.drawBackground();
-    // spaceship.draw();
-    // generateAsteroid();
-  },
-  generateAsteroid: function () {
-    this.asteroidField.push(new Asteroid(game.ctx));
-  },
-  clear: function () {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  },
-  drawAll: function () {
+  drawAll: function() {
     this.background.draw();
     // this.asteroidField.draw(); CON ESTO NO PINTA EL BACKGROUND
     // generateAsteroid();
     spaceship.draw();
-    this.asteroidField.forEach(function (asteroid) {
+    this.asteroidField.forEach(function(asteroid) {
       asteroid.draw();
       // asteroidField.draw(); //CON ESTO PINTA EL FONDO PERO NO EL ASTEROIDE
     });
+  },
+  updateGame: function() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // meter no this.moveAll();
+    spaceship.move();
+    this.asteroidField.forEach(function(asteroid) {
+      asteroid.move();
+    });
+
+    this.drawAll();
+    //if frames is % .... instantiate new asteroid
+
+    // detect collision
+    if (this.hasCollided()) {
+      this.over();
+      alert("GAME OVER");
+    }
+
+    // game.drawBackground();
+    // spaceship.draw();
+    // generateAsteroid();
+  },
+  generateAsteroid: function() {
+    this.asteroidField.push(new Asteroid(game.ctx));
+  },
+  clear: function() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
   top(elm) {
     return elm.y;
@@ -67,15 +80,25 @@ const game = {
     return elm.x;
   },
 
-  hasCollided: function () {
+  hasCollided: function() {
     return this.asteroidField.some(asteroid => {
       return !(
-        top(spaceship) > bottom(asteroid) ||
-        right(spaceship) < left(asteroid) ||
-        bottom(spaceship) < top(asteroid) ||
-        left(spaceship) > right(asteroid)
+        game.top(spaceship) > game.bottom(asteroid) ||
+        game.right(spaceship) < game.left(asteroid) ||
+        game.bottom(spaceship) < game.top(asteroid) ||
+        game.left(spaceship) > game.right(asteroid)
       );
     });
+  },
+
+  over: function() {
+    // Stops clock(clears setInterval).
+    clearInterval(this.interval);
+
+    // Stores highscore.
+    // Shows message(game over or new high score).
+    // Asks player to restart.
+    // Calls start()
   }
   // moveAll: function (asteroid) {
   //   asteroid.move();
@@ -89,7 +112,7 @@ const game = {
   //   this.frames += 1;
   //   this.asteroidField.draw();
   // }
-}
+};
 
 game.init();
 game.start();
@@ -103,13 +126,7 @@ function setEventListeners() {
     } else if (e.keyCode === 39) {
       spaceship.angle += 5;
     }
-  }
-};
+  };
+}
 
 setEventListeners();
-
-// keys: {
-//   LEFT_KEY: 37,
-//   UP_KEY: 38,
-//   RIGHT_KEY: 39
-// },

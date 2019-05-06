@@ -5,15 +5,14 @@ class Asteroid {
     this.y = 350;
     this.width = 80;
     this.height = 60;
-    this.vx = 1;
+    this.vx = 5;
     this.vy = 5;
     // this.width = game.canvas.width;
     // this.height = game.canvas.height;
     this.img = new Image();
     // this.img.onload = () => {
-    this.img.src = 'img/asteroid.png';
+    this.img.src = "img/asteroid.png";
     // }
-
 
     // this.topLimit = canvas.y
     // this.rightLimit = canvas.x + canvas.width
@@ -21,7 +20,6 @@ class Asteroid {
     // this.leftLimit = canvas.x
   }
   draw() {
-
     this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
   move() {
@@ -40,7 +38,6 @@ class Asteroid {
   //   this.draw();
   // }
 
-
   // offScreen() {
   //   if (this.x <= game.canvas.x /*leftLimit*/ ||
   //     this.x >= game.canvas.x + game.canvas.width /*rightLimit*/ ||
@@ -49,5 +46,4 @@ class Asteroid {
   //     return offScreen
   //   }
   // }
-
 }
