@@ -4,7 +4,7 @@ let spaceship = {
   y: undefined,
   width: 60,
   height: 110,
-  angle: 0,
+  angle: 90,
   vx: 0,
   vy: 0,
   power: 3,

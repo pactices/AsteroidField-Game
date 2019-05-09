@@ -23,31 +23,43 @@ class Asteroid {
   asteroidOrigin() {
     //determina de que lado aparece el asteroide
     let originSide = Math.floor(Math.random() * (4) + 1);
-    // originSide = 4;
+    // originSide = 2;
     //genera aleatoriamente el punto del lado donde aparece el asteroide
     if (originSide === 1) { //from the top
-      this.x = Math.floor(Math.random() * (1330));
-      this.y = 0 + this.vy;
-      this.vx = this.vx;
+      this.x = Math.floor(Math.random() * (game.canvas.width - 400) + 200);
+      this.y = -this.height;
+      let angle = Math.floor(Math.random() * (160 - 20) + 110);
+      let vel = Math.floor(Math.random() * (5) + 3);
+      this.vx = Math.cos(-Math.PI / 2 + angle * Math.PI / 180) * vel;
+      this.vy = Math.sin(-Math.PI / 2 + angle * Math.PI / 180) * vel;
+      console.log(`angle=${angle} vx=${this.vx} vy=${this.vy}`);
     } else if (originSide === 2) { //from the right
-      this.vx = -(this.vx);
-      this.x = Math.floor(Math.random() * (1400));
-      this.vy = -(this.vy);
-      this.y = Math.floor(Math.random() * (600 - 100 + 1) + 100);
+      this.x = game.canvas.width;
+      this.y = Math.floor(Math.random() * (game.canvas.height - 100) + 50);
+      let angle = Math.floor(Math.random() * (160 - 20) + 200);
+      let vel = Math.floor(Math.random() * (5) + 3);
+      this.vx = Math.cos(-Math.PI / 2 + angle * Math.PI / 180) * vel;
+      this.vy = Math.sin(-Math.PI / 2 + angle * Math.PI / 180) * vel;
     } else if (originSide === 3) { //from the bottom
-      this.vx = -(this.vx);
-      this.x = Math.floor(Math.random() * (1300 - 100 + 1) + 100) - this.vx;
-      this.vy = -(this.vy);
-      this.y = 700 - this.vy;
+      this.x = Math.floor(Math.random() * (game.canvas.width - 400) + 200);
+      this.y = game.canvas.height;
+      let angle = Math.floor(Math.random() * (160 - 20) + 290);
+      let vel = Math.floor(Math.random() * (5) + 3);
+      this.vx = Math.cos(-Math.PI / 2 + angle * Math.PI / 180) * vel;
+      this.vy = Math.sin(-Math.PI / 2 + angle * Math.PI / 180) * vel;
     } else { //from the left
-      this.x = 0 + this.vx;
-      this.y = Math.floor(Math.random() * (650 - 50 + 1) + 50) + this.vy;
+      this.x = -this.width;
+      this.y = Math.floor(Math.random() * (game.canvas.height - 100) + 50);
+      let angle = Math.floor(Math.random() * (160 - 20) + 20);
+      let vel = Math.floor(Math.random() * (5) + 3);
+      this.vx = Math.cos(-Math.PI / 2 + angle * Math.PI / 180) * vel;
+      this.vy = Math.sin(-Math.PI / 2 + angle * Math.PI / 180) * vel;
     }
   }
 
   draw() {
-    console.log("x", this.x)
-    console.log("y", this.y)
+    // console.log("x", this.x)
+    // console.log("y", this.y)
     this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
   move() {
@@ -56,14 +68,4 @@ class Asteroid {
 
   }
 
-  // renewAsteroid();
-
-  // offScreen() {
-  //   if (this.x <= game.canvas.x /*leftLimit*/ ||
-  //     this.x >= game.canvas.x + game.canvas.width /*rightLimit*/ ||
-  //     this.y >= game.canvas.y + game.canvas.height /*bottomLimit*/ ||
-  //     this.y <= game.canvas.y /*topLimit*/ ) {
-  //     return offScreen
-  //   }
-  // }
 }

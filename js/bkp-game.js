@@ -1,4 +1,4 @@
-const game = {
+/*const game = {
   canvas: document.getElementById("mycanvas"),
   ctx: undefined,
   frames: 0,
@@ -10,7 +10,7 @@ const game = {
 
   start: function () {
     this.reset();
-    this.interval = setInterval(this.updateGame.bind(this), 30);
+    this.interval = setInterval(this.updateGame.bind(this), 2000 / 60);
   },
   reset: function () {
     spaceship.x = game.canvas.width / 2;
@@ -38,20 +38,18 @@ const game = {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // controlamos que frameCounter no sea superior a 1000
-    if (this.frames > 10000) {
+    if (this.frames > 1000) {
       this.frames = 0;
     }
 
-    if (this.frames % 1000 === 0) { //CADA CUANTO GENERA UM NUEVO ASTEROIDE
+    if (this.frames % 60 === 0) { //CADA CUANTO GENERA UM NUEVO ASTEROIDE
       this.asteroidField.push(new Asteroid(this.ctx));
     }
 
     // meter en this.moveAll();
-    this.background.move();
     spaceship.move();
     this.asteroidField.forEach(function (asteroid) {
       asteroid.move();
-
     });
 
     this.drawAll();
@@ -63,7 +61,7 @@ const game = {
     };
     // console.log("colision", this.hasCollided());
 
-    this.renewAsteroid();
+    this.clearAsteroidField();
 
 
     //codigo para fazer entrar do lado oposto ao lado por onde saiu
@@ -83,21 +81,13 @@ const game = {
 
   //chequeo si el asteroide salió de la pantalla y lo limpio del array
   //esto elimina los obstáculos del array que estén fuera de la pantalla
-  renewAsteroid: function () {
-    let asteroidCounter = 0;
+  clearAsteroidField: function () {
     this.asteroidField = this.asteroidField.filter(function (asteroid) {
-      if (asteroid.x < -asteroid.width || asteroid.x > game.canvas.width || asteroid.y < -asteroid.height || asteroid.y > game.canvas.height) {
-        asteroidCounter++;
+      if (asteroid.x < 0 || asteroid.x > 1430 || asteroid.y < 0 || asteroid.y > 700) {
         return false
       } else return true;
     });
-    for (let i = 0; i < asteroidCounter; i++)
-      this.asteroidField.push(new Asteroid(this.ctx));
   },
-
-
-
-
 
   clear: function () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -134,9 +124,10 @@ const game = {
   },
 
   isOffTop: function () {
-    return (spaceship.y < 0 /*topLimit*/ );
-  },
-  isOffRight: function () {
+    return (spaceship.y < 0 /*topLimit*/
+);
+},
+isOffRight: function () {
     return (spaceship.x > game.canvas.width /*rightLimit*/ );
   },
   isOffBottom: function () {
@@ -197,4 +188,4 @@ function setEventListeners() {
   };
 }
 
-setEventListeners();
+setEventListeners();*/
