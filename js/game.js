@@ -3,19 +3,16 @@ const game = {
   ctx: undefined,
   frames: 0,
   highscore: 0,
-  init: function() {
+  init: function () {
     this.ctx = this.canvas.getContext("2d");
-    // call updateGame() every 20 milliseconds
-    //
+
   },
-  // drawBackground: function () {
-  //   document.body.style.backgroundImage = "url(img/sky.png)";
-  // },
-  start: function() {
+
+  start: function () {
     this.reset();
     this.interval = setInterval(this.updateGame.bind(this), 2000 / 60);
   },
-  reset: function() {
+  reset: function () {
     spaceship.x = game.canvas.width / 2;
     spaceship.y = game.canvas.height / 2;
     this.background = new Background(
@@ -24,48 +21,83 @@ const game = {
       this.ctx
     );
     this.framesCounter = 0;
-    this.asteroidField = [];
-    this.score = 0;
-    this.generateAsteroid();
-    // this.renewAsteroid();
+    this.asteroidField = [new Asteroid(this.ctx)];
+    // this.highscore = 0; //SI YA EMPIEZA EN ZERO, TIENE SENTIDO ESTO AQUI???
+
   },
-  drawAll: function() {
+  drawAll: function () {
     this.background.draw();
-    // this.asteroidField.draw(); CON ESTO NO PINTA EL BACKGROUND
-    // generateAsteroid();
     spaceship.draw();
-    this.asteroidField.forEach(function(asteroid) {
+    this.asteroidField.forEach(function (asteroid) {
       asteroid.draw();
       // asteroidField.draw(); //CON ESTO PINTA EL FONDO PERO NO EL ASTEROIDE
     });
   },
-  updateGame: function() {
+  updateGame: function () {
+    game.frames += 1;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // meter no this.moveAll();
+    // controlamos que frameCounter no sea superior a 1000
+    if (this.frames > 1000) {
+      this.frames = 0;
+    }
+
+    if (this.frames % 60 === 0) { //CADA CUANTO GENERA UM NUEVO ASTEROIDE
+      this.asteroidField.push(new Asteroid(this.ctx));
+    }
+
+    // meter en this.moveAll();
     spaceship.move();
-    this.asteroidField.forEach(function(asteroid) {
+    this.asteroidField.forEach(function (asteroid) {
       asteroid.move();
     });
 
     this.drawAll();
-    //if frames is % .... instantiate new asteroid
 
     // detect collision
     if (this.hasCollided()) {
       this.over();
-      alert("GAME OVER");
-    }
 
-    // game.drawBackground();
-    // spaceship.draw();
-    // generateAsteroid();
+    };
+    // console.log("colision", this.hasCollided());
+
+    this.clearAsteroidField();
+
+
+    //codigo para fazer entrar do lado oposto ao lado por onde saiu
+    if (this.isOffRight()) {
+      spaceship.x = 0;
+    } else if (this.isOffLeft()) {
+      spaceship.x = 1430;
+    } else if (this.isOffTop()) {
+      spaceship.y = 700
+    } else if (this.isOffBottom()) {
+      spaceship.y = 0;
+    };
+
+    // update and draw the score ON THE SCREEN
+    this.scoreDraw();
   },
-  generateAsteroid: function() {
-    this.asteroidField.push(new Asteroid(game.ctx));
+
+  //chequeo si el asteroide salió de la pantalla y lo limpio del array
+  //esto elimina los obstáculos del array que estén fuera de la pantalla
+  clearAsteroidField: function () {
+    this.asteroidField = this.asteroidField.filter(function (asteroid) {
+      if (asteroid.x < 0 || asteroid.x > 1430 || asteroid.y < 0 || asteroid.y > 700) {
+        return false
+      } else return true;
+    });
   },
-  clear: function() {
+
+  clear: function () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  },
+  scoreDraw: function () {
+    var points = this.frames;
+    this.ctx.font = "20px sans-serif";
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText("Score: " + points, 350, 50);
+    return points;
   },
   top(elm) {
     return elm.y;
@@ -80,7 +112,7 @@ const game = {
     return elm.x;
   },
 
-  hasCollided: function() {
+  hasCollided: function () {
     return this.asteroidField.some(asteroid => {
       return !(
         game.top(spaceship) > game.bottom(asteroid) ||
@@ -91,39 +123,65 @@ const game = {
     });
   },
 
-  over: function() {
+  isOffTop: function () {
+    return (spaceship.y < 0 /*topLimit*/ );
+  },
+  isOffRight: function () {
+    return (spaceship.x > game.canvas.width /*rightLimit*/ );
+  },
+  isOffBottom: function () {
+    return (spaceship.y > game.canvas.height /*bottomLimit*/ );
+  },
+  isOffLeft: function () {
+    return (spaceship.x < 0 /*leftLimit*/ );
+  },
+
+  over: function () {
     // Stops clock(clears setInterval).
     clearInterval(this.interval);
-
     // Stores highscore.
-    // Shows message(game over or new high score).
+    this.highscore = this.scoreDraw();
+
+    this.ctx.fillStyle = "white";
+    this.ctx.fillRect(10, 10, 300, 300);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillText("GAME OVER", 30, 60);
+    this.ctx.fillText("Your score: " + this.highscore, 30, 90);
+    this.ctx.fillText("Highest ever: " + localStorage.getItem("puntuacion"), 30, 120);
+    if (this.highscore > Number(localStorage.getItem("puntuacion"))) {
+      this.ctx.fillStyle = "red";
+      this.ctx.fillText("NEW RECORD", 30, 180);
+      localStorage.setItem('puntuacion', this.highscore);
+    }
+    console.log("You reached " + this.highscore + " points");
+    // Shows message(game over or new highscore).
     // Asks player to restart.
     // Calls start()
+    // setHighest();
   }
-  // moveAll: function (asteroid) {
-  //   asteroid.move();
-  // },
-  // renewAsteroid() {
-  //   /*if (offScreen)*/
-  //   for (i = 0; i < this.asteroidField.length; i++) {
-  //     this.asteroidField[i].x += 1;
-  //     this.asteroidField[i].draw();
-  //   }
-  //   this.frames += 1;
-  //   this.asteroidField.draw();
-  // }
+
 };
+
+
+// function setHighest() {
+//   console.log(localStorage)
+//   if (this.highscore > Number(localStorage.getItem("puntuacion"))) {
+//     localStorage.setItem(this.highscore);
+//   } else {
+//     return this.highscore;
+//   }
+// }
 
 game.init();
 game.start();
 
 function setEventListeners() {
   document.onkeydown = e => {
-    if (e.keyCode === 37) {
+    if (e.keyCode === 37) { //LEFT_ARROW
       spaceship.angle -= 5;
-    } else if (e.keyCode === 38) {
+    } else if (e.keyCode === 38) { //UP_ARROW
       spaceship.burn();
-    } else if (e.keyCode === 39) {
+    } else if (e.keyCode === 39) { //RIGHT_ARROW
       spaceship.angle += 5;
     }
   };
