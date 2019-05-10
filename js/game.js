@@ -30,7 +30,7 @@ const game = {
     spaceship.draw();
     this.asteroidField.forEach(function (asteroid) {
       asteroid.draw();
-      // asteroidField.draw(); //CON ESTO PINTA EL FONDO PERO NO EL ASTEROIDE
+
     });
   },
   updateGame: function () {
@@ -42,7 +42,7 @@ const game = {
       this.frames = 0;
     }
 
-    if (this.frames % 1000 === 0) { //CADA CUANTO GENERA UM NUEVO ASTEROIDE
+    if (this.frames % 500 === 0) { //CADA CUANTO GENERA UM NUEVO ASTEROIDE
       this.asteroidField.push(new Asteroid(this.ctx));
     }
 
@@ -91,8 +91,9 @@ const game = {
         return false
       } else return true;
     });
-    for (let i = 0; i < asteroidCounter; i++)
+    for (let i = 0; i < asteroidCounter; i++) {
       this.asteroidField.push(new Asteroid(this.ctx));
+    }
   },
 
 
@@ -151,25 +152,30 @@ const game = {
     clearInterval(this.interval);
     // Stores highscore.
     this.highscore = this.scoreDraw();
+    spaceship.explode();
+    setTimeout(() => {
+      this.ctx.fillStyle = "white";
+      this.ctx.fillRect(450, 50, 600, 300);
+      this.ctx.font = "80px sans-serif";
+      this.ctx.letterspacing = "2em";
+      this.ctx.fillStyle = "black";
+      this.ctx.fillText("GAME OVER", 500, 140);
+      this.ctx.font = "30px sans-serif";
+      this.ctx.fillText("Your score:   " + this.highscore, 500, 200);
+      this.ctx.fillText("Highest ever:   " + localStorage.getItem("puntuacion"), 500, 250);
+      this.ctx.font = "20px sans-serif";
+      this.ctx.fillStyle = "green";
+      this.ctx.fillText("Press ENTER to Restart", 800, 300);
 
-    this.ctx.fillStyle = "white";
-    this.ctx.fillRect(450, 50, 500, 300);
-    this.ctx.fillStyle = "black";
-    this.ctx.fillText("GAME OVER", 500, 120);
-    this.ctx.fillText("Your score:   " + this.highscore, 500, 200);
-    this.ctx.fillText("Highest ever:   " + localStorage.getItem("puntuacion"), 500, 250);
-    if (this.highscore > Number(localStorage.getItem("puntuacion"))) {
-      this.ctx.fillStyle = "red";
-      this.ctx.fillText("NEW RECORD", 500, 300);
-      localStorage.setItem('puntuacion', this.highscore);
-    }
-    console.log("You reached " + this.highscore + " points");
-    // Shows message(game over or new highscore).
-    // Asks player to restart.
-    // Calls start()
-    // setHighest();
+
+      if (this.highscore > Number(localStorage.getItem("puntuacion"))) {
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText("NEW RECORD", 500, 300);
+        localStorage.setItem('puntuacion', this.highscore);
+      };
+
+    }, 20);
   }
-
 };
 
 
@@ -193,6 +199,10 @@ function setEventListeners() {
       spaceship.burn();
     } else if (e.keyCode === 39) { //RIGHT_ARROW
       spaceship.angle += 5;
+    } else if (e.keyCode === 13) {
+      game.init();
+      game.start();
+      game.frames = 0;
     }
   };
 }

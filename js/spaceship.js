@@ -26,6 +26,16 @@ let spaceship = {
   move: function () {
     this.x += this.vx;
     this.y += this.vy;
+  },
+  explode: function () {
+    console.log(`x=${spaceship.x + spaceship.width / 2 - 450} y=${spaceship.y + spaceship.height / 2 + 240}`);
+    this.audio = new Audio('sound/explosion.wav');
+    this.audio.play();
+    explosion = new Image();
+    explosion.src = "img/explosion5.png";
+    explosion.onload = () => {
+      game.ctx.drawImage(explosion, spaceship.x + spaceship.width / 2 - 175, spaceship.y + spaceship.height / 2 - 220, 350, 350);
+    }
   }
 
 }

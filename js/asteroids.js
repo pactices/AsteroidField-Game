@@ -14,6 +14,8 @@ class Asteroid {
     // this.img.onload = () => {
     this.img.src = "img/asteroid.png";
     // }
+    this.audio = new Audio('sound/blip.wav');
+    // this.audio.play();
     this.asteroidOrigin();
     // this.topLimit = canvas.y
     // this.rightLimit = canvas.x + canvas.width
