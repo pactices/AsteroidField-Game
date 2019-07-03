@@ -22,8 +22,7 @@ const game = {
     );
     this.framesCounter = 0;
     this.asteroidField = [new Asteroid(this.ctx)];
-    // this.highscore = 0; //SI YA EMPIEZA EN ZERO, TIENE SENTIDO ESTO AQUI???
-
+    
   },
   drawAll: function () {
     this.background.draw();
@@ -66,7 +65,7 @@ const game = {
     this.renewAsteroid();
 
 
-    //codigo para fazer entrar do lado oposto ao lado por onde saiu
+    // codigo para hacer que entre del lado opuesto al lado por donde sale
     if (this.isOffRight()) {
       spaceship.x = 0;
     } else if (this.isOffLeft()) {
